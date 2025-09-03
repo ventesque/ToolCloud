@@ -3,61 +3,74 @@
     let slider = null;
     let volume = null;
 
+    function checkThenExecute(selector, fn) {
+        const element = document.querySelector(selector);
+        if (!element) {
+            return "unknown";
+        }
+        
+        return fn(element);
+    }
+
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         switch (message.action) {
             case "skip":
                 skipControl();
                 break;
+
             case "previous":
                 previousControl();
                 break;
+
             case "play":
                 playControl();
                 break;
+
             case "getPlaybackStatus":
-                const playButton = document.querySelector(".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x");
-                if(!playButton){
-                    sendResponse("unknown");
-                    return true;
-                }
-                if (playButton.classList.contains("playing")){
-                    sendResponse("playing");
-                } else {
-                    sendResponse("paused");
-                }
+                sendResponse(
+                    checkThenExecute(
+                        ".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x",
+                        playButton => playButton.classList.contains("playing") ? "playing" : "paused"
+                    )
+                );
                 return true;
+
             case "getPlaybackTime_timeline":
-                const playbackTimeline = document.querySelector(".playbackTimeline__progressHandle.sc-ir");
-                if(!playbackTimeline){
-                    sendResponse("unknown");
-                    return true;
-                }
-                sendResponse(parseFloat(playbackTimeline.style.left));
+                sendResponse(
+                    checkThenExecute(
+                        ".playbackTimeline__progressHandle.sc-ir",
+                        playbackTimeline => parseFloat(playbackTimeline.style.left)
+                    )
+                );
                 return true;
+
             case "getPlaybackTime_timer":
-                const playbackTimer = document.querySelector(".playbackTimeline__progressWrapper.sc-mx-1x");
-                if(!playbackTimer){
-                    sendResponse("unknown");
-                    return true;
-                }
-                sendResponse(parseInt(playbackTimer.getAttribute('aria-valuenow')));
+                sendResponse(
+                    checkThenExecute(
+                        ".playbackTimeline__progressWrapper.sc-mx-1x",
+                        playbackTimer => parseInt(playbackTimer.getAttribute('aria-valuenow'))
+                    )
+                 );
                 return true;
+
             case "getSongDuration_timer":
-                const songDuration = document.querySelector(".playbackTimeline__progressWrapper.sc-mx-1x");
-                if(!songDuration){
-                    sendResponse("unknown");
-                    return true;
-                }
-                sendResponse(parseInt(songDuration.getAttribute('aria-valuemax')));
+                sendResponse(
+                    checkThenExecute(
+                        ".playbackTimeline__progressWrapper.sc-mx-1x",
+                        songDuration => parseInt(songDuration.getAttribute('aria-valuemax'))
+                    )
+                );
                 return true;
+
             case "getSongTitle":
-                const songTitle = document.querySelector('.playbackSoundBadge__titleLink.sc-truncate.sc-text-h5.sc-link-primary');
-                if (!songTitle) {
-                    sendResponse("unknown");
-                    return true;
-                }
-                sendResponse(songTitle.title);
+                sendResponse(
+                    checkThenExecute(
+                        ".playbackSoundBadge__titleLink.sc-truncate.sc-text-h5.sc-link-primary",
+                        songTitle => songTitle.title
+                    )
+                )
                 return true;
+
             default:
                 ToolCloudUtils.warn("No action found with message:", message.action);
                 break;
