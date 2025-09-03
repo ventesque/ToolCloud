@@ -1,5 +1,13 @@
 (function () { 
 
+    const selectors = {
+        playControlButton: ".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x",
+        playbackTimeline: ".playbackTimeline__progressHandle.sc-ir",
+        playbackTimer: ".playbackTimeline__progressWrapper.sc-mx-1x",
+        songTitle: ".playbackSoundBadge__titleLink.sc-truncate.sc-text-h5.sc-link-primary",
+        songArtist: ".playbackSoundBadge__lightLink.sc-link-light.sc-link-secondary.sc-truncate.sc-text-h5",
+    }
+
     function checkThenExecute(selector, fn) {
         const element = document.querySelector(selector);
         if (!element) {
@@ -26,7 +34,7 @@
             case "getPlaybackStatus":
                 sendResponse(
                     checkThenExecute(
-                        ".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x",
+                        selectors.playControlButton,
                         playButton => playButton.classList.contains("playing") ? "playing" : "paused"
                     )
                 );
@@ -35,7 +43,7 @@
             case "getPlaybackTime_timeline":
                 sendResponse(
                     checkThenExecute(
-                        ".playbackTimeline__progressHandle.sc-ir",
+                        selectors.playbackTimeline,
                         playbackTimeline => parseFloat(playbackTimeline.style.left)
                     )
                 );
@@ -44,17 +52,17 @@
             case "getPlaybackTime_timer":
                 sendResponse(
                     checkThenExecute(
-                        ".playbackTimeline__progressWrapper.sc-mx-1x",
+                        selectors.playbackTimer,
                         playbackTimer => parseInt(playbackTimer.getAttribute('aria-valuenow'))
                     )
                  );
                 return true;
 
-            case "getSongDuration_timer":
+            case "getSongMaxDuration_timer":
                 sendResponse(
                     checkThenExecute(
-                        ".playbackTimeline__progressWrapper.sc-mx-1x",
-                        songDuration => parseInt(songDuration.getAttribute('aria-valuemax'))
+                        selectors.playbackTimer,
+                        songMaxDuration => parseInt(songMaxDuration.getAttribute('aria-valuemax'))
                     )
                 );
                 return true;
@@ -62,16 +70,43 @@
             case "getSongTitle":
                 sendResponse(
                     checkThenExecute(
-                        ".playbackSoundBadge__titleLink.sc-truncate.sc-text-h5.sc-link-primary",
+                        selectors.songTitle,
                         songTitle => songTitle.title
                     )
                 )
                 return true;
-
+                
             default:
                 ToolCloudUtils.warn("No action found with message:", message.action);
                 break;
         }
     });
+
+
+    function initDiscordRpc() {
+        const trackData = {
+                    title: checkThenExecute(
+                        selectors.songTitle,
+                        songTitle => songTitle.title
+                    ),
+                    artist: checkThenExecute(
+                        selectors.songArtist,
+                        songArtist => songArtist.title
+                    ),
+                    duration: checkThenExecute(
+                        selectors.playbackTimer,
+                        songMaxDuration => parseInt(songMaxDuration.getAttribute('aria-valuemax') * 1000) //rpc needs millisecnds
+                    ),
+                    position: checkThenExecute(
+                        selectors.playbackTimer,
+                        playbackTimer => parseInt(playbackTimer.getAttribute('aria-valuenow') * 1000) //rpc needs milliseconds
+                    )
+        }
+        DiscordPresence.sendTrackData(trackData);
+    }
+
+    window.ToolCloudListener = {
+        initDiscordRpc
+    }
 
 }) ();

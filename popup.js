@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    //html elements used in following logic
+    //html elements used in my popup stored for accessibility
     const elements = {
         autoscroll: document.getElementById("toggle-scroll"),
         autoplayShuffle: document.getElementById("toggle-autoplay_shuffle"),
@@ -22,14 +22,14 @@ document.addEventListener("DOMContentLoaded", () => {
     document.head.appendChild(styleEl);
     const sheet = styleEl.sheet;
 
-    //init
+    //initializing all the elements upon opening the popup
     [
         () => changePlayIcon(elements.playIcon),
         () => displayCurrentPlaybackTime_timeline(elements.playbackTimeline),
         () => displayCurrentPlaybackTime_timer(elements.playbackTimer, elements.songDuration),
         () => displaySongDuration(elements.songDuration),
         () => displaySongTitle(elements.songTitle),
-        () => setupControlEvents(elements.playControl, elements.previousButton, elements.skipButton, elements.playIcon)
+        () => setupControlEvents(elements.playControl, elements.previousButton, elements.skipButton, elements.playIcon),
     ].forEach(fn => fn());
 
     //every second after init
@@ -185,7 +185,7 @@ function setupControlEvents(playControl, previous, skip, playIcon) {
 }
 
 function displaySongDuration(songDuration) {
-  sendActionMessage("getSongDuration_timer", (_tabId, progress) => {
+  sendActionMessage("getSongMaxDuration_timer", (_tabId, progress) => {
     console.debug("Got answer with progress of:", progress);
     if(progress === 'unknown'){
       console.warn("Fehler beim auslesen der Songduration:", progress, _tabId);
@@ -196,8 +196,6 @@ function displaySongDuration(songDuration) {
     }
   });
 }
-
-
 
 function displayCurrentPlaybackTime_timeline(playbackTimeline){
   sendActionMessage("getPlaybackTime_timeline", (_tabId, progress) => {
