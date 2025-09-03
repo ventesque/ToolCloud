@@ -8,7 +8,7 @@
   "content_scripts": [
     {
       "matches": ["https://soundcloud.com/*"],
-      "js": ["utils.js", "player.js", "autoplay.js", "autoscroll.js", "urlhandler.js", "content-script.js"],
+      "js": ["utils.js", "player.js", "autoplay.js", "autoscroll.js", "urlhandler.js", "content-script.js", "discord-presence.js"],
       "run_at": "document_idle"
     }
   ],
