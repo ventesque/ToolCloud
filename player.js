@@ -1,96 +1,5 @@
 (function () {
 
-    let slider = null;
-    let volume = null;
-
-    function checkThenExecute(selector, fn) {
-        const element = document.querySelector(selector);
-        if (!element) {
-            return "unknown";
-        }
-        
-        return fn(element);
-    }
-
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        switch (message.action) {
-            case "skip":
-                skipControl();
-                break;
-
-            case "previous":
-                previousControl();
-                break;
-
-            case "play":
-                playControl();
-                break;
-
-            case "getPlaybackStatus":
-                sendResponse(
-                    checkThenExecute(
-                        ".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x",
-                        playButton => playButton.classList.contains("playing") ? "playing" : "paused"
-                    )
-                );
-                return true;
-
-            case "getPlaybackTime_timeline":
-                sendResponse(
-                    checkThenExecute(
-                        ".playbackTimeline__progressHandle.sc-ir",
-                        playbackTimeline => parseFloat(playbackTimeline.style.left)
-                    )
-                );
-                return true;
-
-            case "getPlaybackTime_timer":
-                sendResponse(
-                    checkThenExecute(
-                        ".playbackTimeline__progressWrapper.sc-mx-1x",
-                        playbackTimer => parseInt(playbackTimer.getAttribute('aria-valuenow'))
-                    )
-                 );
-                return true;
-
-            case "getSongDuration_timer":
-                sendResponse(
-                    checkThenExecute(
-                        ".playbackTimeline__progressWrapper.sc-mx-1x",
-                        songDuration => parseInt(songDuration.getAttribute('aria-valuemax'))
-                    )
-                );
-                return true;
-
-            case "getSongTitle":
-                sendResponse(
-                    checkThenExecute(
-                        ".playbackSoundBadge__titleLink.sc-truncate.sc-text-h5.sc-link-primary",
-                        songTitle => songTitle.title
-                    )
-                )
-                return true;
-
-            default:
-                ToolCloudUtils.warn("No action found with message:", message.action);
-                break;
-        }
-    });
-
-    function getSlider() {
-        volume = document.querySelector('.volume');
-        volume.classList.add('expanded');
-
-        setTimeout(() => {
-            slider = document.querySelector('.volume__sliderWrapper');
-            if (!slider) {
-                ToolCloudUtils.warn("Slider not found.");
-                return;
-            }
-            volume.classList.remove('expanded');
-        }, 500);
-    }
-
     function playControl() {
         const playControl = document.querySelector(".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x");
         if(!playControl) ToolCloudUtils.warn("Playcontrol not found.");
@@ -109,12 +18,30 @@
         ToolCloudUtils.simulateClick(previousControl);
     }
 
-    function changeVolume(percent) {
-        /*
+    /*
         ============================================================
                  This works with a small margin of error.
                                 WIP
         ============================================================
+
+    let slider = null;
+    let volume = null;
+
+    function getSlider() {
+        volume = document.querySelector('.volume');
+        volume.classList.add('expanded');
+
+        setTimeout(() => {
+            slider = document.querySelector('.volume__sliderWrapper');
+            if (!slider) {
+                ToolCloudUtils.warn("Slider not found.");
+                return;
+            }
+            volume.classList.remove('expanded');
+        }, 500);
+    }
+
+    function changeVolume(percent) {
 
         console.debug("called with percent: ", percent);
         
@@ -159,12 +86,9 @@
                 el.dispatchEvent(evtUp);
             }
         }
-        */
-    }
+    }*/
    
     window.ToolCloudPlayer = {
-        changeVolume,
-        getSlider,
         playControl,
         skipControl,
         previousControl
