@@ -75,7 +75,7 @@
                     )
                 )
                 return true;
-                
+
             default:
                 ToolCloudUtils.warn("No action found with message:", message.action);
                 break;
@@ -100,6 +100,10 @@
                     position: checkThenExecute(
                         selectors.playbackTimer,
                         playbackTimer => parseInt(playbackTimer.getAttribute('aria-valuenow') * 1000) //rpc needs milliseconds
+                    ),
+                    songLink: checkThenExecute(
+                        selectors.songTitle,
+                        songLink => songLink.href
                     )
         }
         DiscordPresence.sendTrackData(trackData);
