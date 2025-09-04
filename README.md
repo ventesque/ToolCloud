@@ -1,10 +1,10 @@
 __DISCLAIMER:__ This addon is merely a learning experience for me. Don't expect frequent updates or commercial grade code or refinement in the app itself. 
 
 # ToolCloud
-This is a Firefox Browser-Addon designed to provide a variety of Quality of Life improvements to the SoundCloud.com Browser App.
+This is a Firefox Browser-Addon designed to provide a variety of Quality of Life improvements to the SoundCloud.com Browser App. You can find it [here](https://addons.mozilla.org/en-US/firefox/addon/toolcloud/).
 
- This Browser-Addon only functions on SoundCloud.com.
- It accesses no data from any other websites will automatically be disabled while not on Soundcloud.com
+ This Browser-Addon only works with data from SoundCloud.com.  
+ It accesses no data from any other websites and will automatically be disabled if you don't have a SoundCloud.com tab open.
 
 # Features:
 All features in this Browser-Addon will only work if toggled on via checkbox in the Addon overlay unless specifically stated otherwise.
@@ -31,6 +31,11 @@ A playback timeline in the addons shows you the current songs progress and title
 From there you can use previous, skip, play/pause buttons in the addon popup.
 
 Control SoundCloud from __anywhere__ in your browser!
+
+## Discord Rich Presence integration
+There is a Discord Rich Presence integration baked into this Addon but it will only worked if used with the [Discord Rich Presence script](https://github.com/ventesque/Discord-RPC-for-ToolCloud).
+
+When used together this will automatically display current song info on your discord rich presence.
 
 ## Credit:
 Icons provided by: Md Tanvirul Haque: https://www.flaticon.com/authors/md-tanvirul-haque
