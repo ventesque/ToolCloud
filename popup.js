@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    //html elements used in my popup stored for accessibility
+    //html elements used in the popup stored for accessibility
     const elements = {
         autoscroll: document.getElementById("toggle-scroll"),
         autoplayShuffle: document.getElementById("toggle-autoplay_shuffle"),

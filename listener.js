@@ -1,5 +1,6 @@
 (function () { 
 
+    // html querySelectors for the SoundCloud html elements that this script extracts data from / interacts with
     const selectors = {
         playControlButton: ".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x",
         playbackTimeline: ".playbackTimeline__progressHandle.sc-ir",
@@ -8,6 +9,7 @@
         songArtist: ".playbackSoundBadge__lightLink.sc-link-light.sc-link-secondary.sc-truncate.sc-text-h5",
     }
 
+    // checks whether the element exists, then executes on them
     function checkThenExecute(selector, fn) {
         const element = document.querySelector(selector);
         if (!element) {
@@ -17,6 +19,7 @@
         return fn(element);
     }
 
+    // acts on the action messages that are sent by the popup/frontend
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         switch (message.action) {
             case "skip":
@@ -83,6 +86,8 @@
     });
 
 
+    // this is only called by the rpc-idler to send information to the rpc script
+    // for displaying song info in discord rich presence
     function initDiscordRpc() {
         const trackData = {
                     title: checkThenExecute(
@@ -106,6 +111,7 @@
                         songLink => songLink.href
                     )
         }
+        // sends data to the websocket
         DiscordPresence.sendTrackData(trackData);
     }
 
