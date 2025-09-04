@@ -1,83 +1,5 @@
 (function () {
 
-    let slider = null;
-    let volume = null;
-
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        switch (message.action) {
-            case "skip":
-                skipControl();
-                break;
-            case "previous":
-                previousControl();
-                break;
-            case "play":
-                playControl();
-                break;
-            case "getPlaybackStatus":
-                const playButton = document.querySelector(".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x");
-                if(!playButton){
-                    sendResponse("unknown");
-                    return true;
-                }
-                if (playButton.classList.contains("playing")){
-                    sendResponse("playing");
-                } else {
-                    sendResponse("paused");
-                }
-                return true;
-            case "getPlaybackTime_timeline":
-                const playbackTimeline = document.querySelector(".playbackTimeline__progressHandle.sc-ir");
-                if(!playbackTimeline){
-                    sendResponse("unknown");
-                    return true;
-                }
-                sendResponse(parseFloat(playbackTimeline.style.left));
-                return true;
-            case "getPlaybackTime_timer":
-                const playbackTimer = document.querySelector(".playbackTimeline__progressWrapper.sc-mx-1x");
-                if(!playbackTimer){
-                    sendResponse("unknown");
-                    return true;
-                }
-                sendResponse(parseInt(playbackTimer.getAttribute('aria-valuenow')));
-                return true;
-            case "getSongDuration_timer":
-                const songDuration = document.querySelector(".playbackTimeline__progressWrapper.sc-mx-1x");
-                if(!songDuration){
-                    sendResponse("unknown");
-                    return true;
-                }
-                sendResponse(parseInt(songDuration.getAttribute('aria-valuemax')));
-                return true;
-            case "getSongTitle":
-                const songTitle = document.querySelector('.playbackSoundBadge__titleLink.sc-truncate.sc-text-h5.sc-link-primary');
-                if (!songTitle) {
-                    sendResponse("unknown");
-                    return true;
-                }
-                sendResponse(songTitle.title);
-                return true;
-            default:
-                ToolCloudUtils.warn("No action found with message:", message.action);
-                break;
-        }
-    });
-
-    function getSlider() {
-        volume = document.querySelector('.volume');
-        volume.classList.add('expanded');
-
-        setTimeout(() => {
-            slider = document.querySelector('.volume__sliderWrapper');
-            if (!slider) {
-                ToolCloudUtils.warn("Slider not found.");
-                return;
-            }
-            volume.classList.remove('expanded');
-        }, 500);
-    }
-
     function playControl() {
         const playControl = document.querySelector(".playControl.sc-ir.playControls__control.sc-button-play.sc-button-large.sc-mr-2x");
         if(!playControl) ToolCloudUtils.warn("Playcontrol not found.");
@@ -96,12 +18,30 @@
         ToolCloudUtils.simulateClick(previousControl);
     }
 
-    function changeVolume(percent) {
-        /*
+    /*
         ============================================================
                  This works with a small margin of error.
                                 WIP
         ============================================================
+
+    let slider = null;
+    let volume = null;
+
+    function getSlider() {
+        volume = document.querySelector('.volume');
+        volume.classList.add('expanded');
+
+        setTimeout(() => {
+            slider = document.querySelector('.volume__sliderWrapper');
+            if (!slider) {
+                ToolCloudUtils.warn("Slider not found.");
+                return;
+            }
+            volume.classList.remove('expanded');
+        }, 500);
+    }
+
+    function changeVolume(percent) {
 
         console.debug("called with percent: ", percent);
         
@@ -146,12 +86,9 @@
                 el.dispatchEvent(evtUp);
             }
         }
-        */
-    }
+    }*/
    
     window.ToolCloudPlayer = {
-        changeVolume,
-        getSlider,
         playControl,
         skipControl,
         previousControl
